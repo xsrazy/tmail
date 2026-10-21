@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Temp-mail: Email Sementara Gratis, Tanpa Daftar</title>
+<meta name="description" content="Temp-mail: email sementara gratis tanpa daftar. Bikin alamat sekali pakai dari 9 domain, terima kode OTP dan email verifikasi dalam hitungan detik. Email otomatis terhapus setelah 24 jam.">
+<meta name="theme-color" content="#0E7C7B">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Temp-mail">
+<meta property="og:title" content="Temp-mail: Email Sementara Gratis, Tanpa Daftar">
+<meta property="og:description" content="Bikin alamat email sekali pakai, terima OTP dan email verifikasi dalam hitungan detik. Tanpa daftar, tanpa ribet.">
+<meta property="og:url" content="https://tmail.xsrazy.web.id/">
+<meta property="og:image" content="https://tmail.xsrazy.web.id/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Temp-mail: Email Sementara Gratis, Tanpa Daftar">
+<meta name="twitter:description" content="Bikin alamat email sekali pakai, terima OTP dan email verifikasi dalam hitungan detik. Tanpa daftar, tanpa ribet.">
+<meta name="twitter:image" content="https://tmail.xsrazy.web.id/assets/og-image.png">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/assets/icon-512.png">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="Logo Temp-mail" width="40" height="40">
+      <span class="brand-text">
+        <span class="brand-name">Temp-mail</span>
+        <span class="brand-tag">Email sementara gratis, tanpa daftar</span>
+      </span>
+    </a>
+    <button id="muteBtn" class="icon-btn" type="button" title="Suara notifikasi: nyala" aria-label="Matikan atau nyalakan suara notifikasi">🔊</button>
+  </div>
+</header>
+
+<main class="container">
+  <section class="card address-card">
+    <div class="label">Alamat kamu saat ini</div>
+    <div class="current-row">
+      <div id="currentAddress" class="current-address">memuat...</div>
+      <div class="current-actions">
+        <button id="copyAddrBtn" class="btn btn-teal" type="button">Salin alamat</button>
+        <button id="qrBtn" class="btn btn-soft" type="button">Kode QR</button>
+      </div>
+    </div>
+
+    <div id="qrPanel" class="qr-panel hidden">
+      <div id="qrBox" class="qr-box"></div>
+      <div class="qr-caption">Pindai buat menyalin alamat ini ke HP</div>
+    </div>
+
+    <div class="tabs-row">
+      <div id="tabs" class="tabs"></div>
+    </div>
+
+    <form id="addrForm" class="addr-form" autocomplete="off">
+      <input id="nameInput" class="input" type="text" placeholder="Ketik nama, contoh: budi.s" maxlength="30" aria-label="Nama alamat email">
+      <select id="domainSelect" class="input" aria-label="Pilih domain"></select>
+      <button class="btn btn-teal" type="submit">Pakai alamat</button>
+      <button id="randomBtn" class="btn btn-amber" type="button">Nama acak</button>
+    </form>
+    <p class="hint">Alamat lama bisa dibuka lagi kapan pun: cukup masukkan nama dan domain yang sama. Tanpa daftar, tanpa kata sandi.</p>
+  </section>
+
+  <div class="layout">
+    <section class="card inbox-card">
+      <div class="card-head">
+        <h2>Inbox <span id="inboxCount" class="badge hidden">0</span></h2>
+        <div class="head-actions">
+          <span id="updatedNote" class="updated-note"></span>
+          <button id="refreshBtn" class="btn btn-soft btn-sm" type="button">Refresh</button>
+          <button id="clearBtn" class="btn btn-danger-soft btn-sm" type="button">Bersihkan</button>
+        </div>
+      </div>
+      <div id="reservedWarn" class="warn hidden">
+        Nama ini termasuk nama khusus. Email ke alamat ini mungkin diteruskan ke mailbox lain oleh aturan lama, jadi inbox di sini bisa saja kosong. Coba pakai nama lain biar aman.
+      </div>
+      <div id="inboxList" class="inbox-list">
+        <div class="empty">Memuat inbox...</div>
+      </div>
+      <p class="hint">Inbox diperbarui otomatis tiap 10 detik. Email otomatis terhapus setelah 24 jam.</p>
+    </section>
+
+    <section class="card reader-card">
+      <div id="readerEmpty" class="empty reader-empty">
+        <img src="/assets/logo.svg" alt="" width="56" height="56" class="empty-logo">
+        <p>Pilih email di inbox buat membaca isinya di sini.</p>
+        <p class="hint">Kode OTP bakal tampil besar dan gampang disalin.</p>
+      </div>
+      <div id="reader" class="reader hidden">
+        <div class="reader-head">
+          <h2 id="rSubject"></h2>
+          <button id="deleteMsgBtn" class="btn btn-danger-soft btn-sm" type="button">Hapus email</button>
+        </div>
+        <div class="reader-meta">
+          <div><span class="meta-label">Dari</span> <span id="rFrom"></span></div>
+          <div><span class="meta-label">Waktu</span> <span id="rTime"></span></div>
+        </div>
+        <div id="otpBlock" class="otp-block hidden">
+          <div class="otp-label">Kode OTP terdeteksi</div>
+          <div class="otp-row">
+            <span id="otpCode" class="otp-code"></span>
+            <button id="copyOtpBtn" class="btn btn-amber" type="button">Salin kode</button>
+          </div>
+        </div>
+        <div id="rBody" class="reader-body"></div>
+      </div>
+    </section>
+  </div>
+
+  <section class="card saved-card">
+    <div class="card-head">
+      <h2>Email Saya</h2>
+    </div>
+    <div id="savedList" class="saved-list"></div>
+    <p class="hint">Alamat yang pernah kamu pakai tersimpan di perangkat ini. Klik Buka buat membuka inbox-nya lagi.</p>
+  </section>
+
+  <footer class="footer">
+    <p>Temp-mail di tmail.xsrazy.web.id. Semua email terhapus otomatis setelah 24 jam.</p>
+  </footer>
+</main>
+
+<div id="toast" class="toast hidden"></div>
+
+<script src="/assets/qrcode.js"></script>
+<script src="/app.js"></script>
+</body>
+</html>
