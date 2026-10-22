@@ -2,7 +2,9 @@
 
 A free temporary email web app. Pick any name and one of the available domains, and instantly get a working inbox in the browser. No registration, no password.
 
-Live: https://tmail.xsrazy.web.id
+**Live:** https://tmail.xsrazy.web.id
+
+![TMail](assets/og-image.png)
 
 ## About
 
@@ -25,12 +27,33 @@ TMail gives anyone a disposable email address that works right away. Addresses a
 - Mail intake: Cloudflare Email Routing catch-all rules on the 9 domains
 - Storage: Cloudflare D1 database (`tmail-web`), with an hourly cron that deletes mail older than 24 hours
 
-## How it works
+## How It Works
 
 1. A sender emails any address on one of the 9 domains
 2. A Cloudflare Email Worker (`tmail-webhook`) receives the message, forwards a copy to the owner's Gmail, and posts the parsed email to this app's `/api/inbound` webhook on Vercel
 3. The email is stored in the D1 database
 4. The web API serves the inbox and message content for that address to anyone who opens it in the browser
+
+## API
+
+| Endpoint | Method | Description |
+| --- | --- | --- |
+| `/api/inbound` | POST | Webhook called by the Cloudflare Email Worker to store a parsed incoming email. Requires the `INBOUND_KEY` secret; requests without it are rejected with 401 |
+| `/api/inbox` | GET | Lists the messages for an address |
+| `/api/inbox` | DELETE | Clears all messages for an address |
+| `/api/message` | GET | Reads one message in full (text and sanitized HTML) |
+| `/api/message` | DELETE | Deletes one message |
+
+## Environment Variables
+
+Names only; the values live in the Vercel project settings.
+
+| Variable | Purpose |
+| --- | --- |
+| `CF_ACCOUNT_ID` | Cloudflare account that owns the D1 database |
+| `CF_D1_TOKEN` | Cloudflare API token used to query D1 |
+| `D1_DATABASE_ID` | The `tmail-web` D1 database |
+| `INBOUND_KEY` | Shared secret that protects the `/api/inbound` webhook |
 
 ## License
 
